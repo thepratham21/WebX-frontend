@@ -105,9 +105,9 @@ const Home = () => {
     ]
 
     const stats = [
-        { value: "10K+", label: "Websites Created", color: "text-white" },
+        { value: "100+", label: "Websites Created", color: "text-white" },
         { value: "99.9%", label: "Uptime Guarantee", color: "text-gray-400" },
-        { value: "< 1s", label: "Generation Speed", color: "text-white" },
+        { value: "< 10 mins", label: "Generation Speed", color: "text-white" },
         { value: "24/7", label: "AI Support", color: "text-gray-400" }
     ]
 

@@ -1,16 +1,83 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# WebX frontend
+A modern, responsive frontend for the WebX platform — built with scalability, clean UI, and real-world architecture in mind.
 
-Currently, two official plugins are available:
+# About the project
+WebX Frontend is the client-side application of the WebX platform, focused on delivering a smooth and intuitive user experience.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+This project is not just about building UI — it’s about creating a structured, scalable frontend similar to real production applications.
 
-## React Compiler
+It focuses on:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+ - Clean component architecture
+ - Maintainable and readable code
+ - Seamless backend integration
 
-## Expanding the ESLint configuration
+# Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+ - React.js
+ - JavaScript (ES6+)
+ - Tailwind CSS
+ - React Router
+ - Axios
+ - Vite
+
+
+
+
+# Features
+
+ - Authentication UI (Login / Signup)
+ - Fast and responsive design
+ - Reusable components
+ - Backend API integration
+ - Mobile-friendly layout
+ - Clean routing and structure
+
+# Project Structure
+```bash
+
+
+src/
+├── components/     # Reusable UI components
+├── pages/          # Screens / routes
+├── assets/         # Static files
+├── utils/          # Helper functions
+├── App.jsx         # Root component
+└── main.jsx        # Entry point
+```
+
+# Preview
+
+![App Screenshot](Screenshots/UI.png)
+![App Screenshot](Screenshots/UI2.png)
+![App Screenshot](Screenshots/UI3.png)
+![App Screenshot](Screenshots/UI4.png)
+![App Screenshot](Screenshots/UI5.png)
+![App Screenshot](Screenshots/UI6.png)
+
+
+
+# Backend
+ This frontend connects with the WebX backend for:
+
+ - Authentication
+ - Data fetching
+ - API communication
+
+-> Backend Repo:
+https://github.com/thepratham21/WebX-backend
+
+# Support 
+If you found this project helpful, consider giving it a ⭐
+
+# Author
+Prathmesh Shinde  
+Building and Learning ~
+
+
+
+
+
+
+
