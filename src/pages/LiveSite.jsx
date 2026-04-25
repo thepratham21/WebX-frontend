@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { serverUrl } from '../App'
+import { serverUrl } from '../utils/constants'
 import axios from 'axios'
 import { useEffect } from 'react'
 // eslint-disable-next-line no-unused-vars

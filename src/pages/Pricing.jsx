@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'motion/react'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
-import { serverUrl } from '../App'
+import { serverUrl } from '../utils/constants'
 import { CreditCard, Shield, Zap, Check, Loader2 } from 'lucide-react'
 
 const Pricing = () => {

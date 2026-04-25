@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { auth, provider } from '../firebase';
 import { signInWithPopup } from 'firebase/auth';
 import axios from 'axios';
-import { serverUrl } from '../App';
+import { serverUrl } from '../utils/constants';
 import { useDispatch } from 'react-redux';
 import { setUserData } from '../redux/userSlice';
 import { Mail, Lock, User, X, ArrowRight } from 'lucide-react';
@@ -245,7 +245,7 @@ const Login = ({ open, onClose }) => {
                             </button>
                         </div>
 
-                        {/* Toggle */}
+                        
                         <p className="text-center mt-6 text-sm text-gray-400">
                             {isSignup ? "Already have an account?" : "Don't have an account?"}
                             <button

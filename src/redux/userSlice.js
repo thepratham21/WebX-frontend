@@ -11,7 +11,6 @@ const userSlice = createSlice({
         }
     }
         
-    
 })
 
 export const { setUserData } = userSlice.actions

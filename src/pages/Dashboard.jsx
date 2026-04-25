@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { serverUrl } from '../App'
+import { serverUrl } from '../utils/constants'
 import axios from 'axios'
 
 const Dashboard = () => {

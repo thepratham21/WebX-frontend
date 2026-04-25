@@ -5,7 +5,7 @@ import Login from '../components/Login'
 import { useDispatch, useSelector } from 'react-redux'
 import { Coins, Sparkles, Zap, Shield, Globe, Menu, X, ArrowRight, TrendingUp, Clock, Lock, Rocket, Code, Palette, Star, Quote } from 'lucide-react'
 import axios from 'axios'
-import { serverUrl } from '../App'
+import { serverUrl } from '../utils/constants'
 import { setUserData } from '../redux/userSlice'
 import { useNavigate } from 'react-router-dom'
 
