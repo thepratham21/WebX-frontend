@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
 import { serverUrl } from '../utils/constants'
-import { CreditCard, Shield, Zap, Check, Loader2 } from 'lucide-react'
+import { CreditCard, Shield, Zap, Check, Loader2, AlertCircle, Mail } from 'lucide-react'
 
 const Pricing = () => {
     const navigate = useNavigate()
@@ -13,6 +13,7 @@ const Pricing = () => {
     const [loadingPlan, setLoadingPlan] = useState(null)
     const [error, setError] = useState(null)
     const [success, setSuccess] = useState(null)
+    const [showDevModal, setShowDevModal] = useState(false)
 
     const plans = [
         {
@@ -67,28 +68,37 @@ const Pricing = () => {
         }
     ]
 
-    // Load Razorpay script dynamically
-    const loadRazorpayScript = () => {
-        return new Promise((resolve) => {
-            const script = document.createElement('script');
-            script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-            script.onload = () => resolve(true);
-            script.onerror = () => resolve(false);
-            document.body.appendChild(script);
-        });
-    }
-
     const handlePayment = async (plan) => {
         if (plan.key === "free") {
             navigate('/generate')
             return
         }
 
-        if (plan.key === "enterprise") {
-            window.location.href = "mailto:sales@webx.com"
+        if (plan.key === "pro") {
+            // Show development modal instead of payment
+            setShowDevModal(true)
             return
         }
 
+        if (plan.key === "enterprise") {
+            // Direct email with template
+            const subject = encodeURIComponent('Enterprise Plan Inquiry - WebX')
+            const body = encodeURIComponent(
+                `Hello WebX Sales Team,\n\n` +
+                `I'm interested in the Enterprise plan (₹1499/month).\n\n` +
+                `Name: ${userData?.name || '[Your Name]'}\n` +
+                `Email: ${userData?.email || '[Your Email]'}\n\n` +
+                `My Requirements:\n` +
+                `- [Please describe your requirements here]\n\n` +
+                `Looking forward to hearing from you.\n\n` +
+                `Best regards,\n` +
+                `${userData?.name || '[Your Name]'}`
+            )
+            window.location.href = `mailto:sales@webx.com?subject=${subject}&body=${body}`
+            return
+        }
+
+        // Original payment logic (kept intact)
         setLoadingPlan(plan.key)
         setError(null)
 
@@ -107,6 +117,16 @@ const Pricing = () => {
             }
 
             // 2. Load Razorpay script
+            const loadRazorpayScript = () => {
+                return new Promise((resolve) => {
+                    const script = document.createElement('script');
+                    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+                    script.onload = () => resolve(true);
+                    script.onerror = () => resolve(false);
+                    document.body.appendChild(script);
+                });
+            }
+
             const scriptLoaded = await loadRazorpayScript()
             if (!scriptLoaded) {
                 throw new Error("Failed to load Razorpay. Please check your internet connection.")
@@ -119,10 +139,10 @@ const Pricing = () => {
                 currency: "INR",
                 name: "WebX",
                 description: `Upgrade to ${plan.name} Plan`,
-                image: "/logo.png", // Add your logo path
+                image: "/logo.png",
                 order_id: order.id,
                 handler: async (response) => {
-                    // 4. Verify payment
+                    
                     try {
                         const verifyResponse = await axios.post(
                             `${serverUrl}/api/payment/verify-payment`,
@@ -139,7 +159,6 @@ const Pricing = () => {
                             setSuccess(`Successfully upgraded to ${plan.name} plan! Credits added to your account.`)
                             setLoadingPlan(null)
                             
-                            // Refresh user data after successful payment
                             setTimeout(() => {
                                 window.location.reload()
                             }, 2000)
@@ -177,9 +196,24 @@ const Pricing = () => {
         }
     }
 
+    const handleProEmailRequest = () => {
+        const subject = encodeURIComponent('Pro Plan Upgrade Request - WebX')
+        const body = encodeURIComponent(
+            `Hello WebX Team,\n\n` +
+            `I would like to upgrade to the Pro plan (₹499/month).\n\n` +
+            `Account Details:\n` +
+            `Name: ${userData?.name || '[Your Name]'}\n` +
+            `Email: ${userData?.email || '[Your Email]'}\n\n` +
+            `Please contact me to complete the upgrade process.\n\n` +
+            `Best regards,\n` +
+            `${userData?.name || '[Your Name]'}`
+        )
+        window.location.href = `mailto:prathmeshshinde021@gmail.com?subject=${subject}&body=${body}`
+        setShowDevModal(false)
+    }
+
     return (
         <div className='min-h-screen bg-black'>
-            {/* Header with Back Button */}
             <div className='border-b border-white/10 bg-black/80 backdrop-blur-xl sticky top-0 z-10'>
                 <div className='max-w-7xl mx-auto px-6 py-4'>
                     <button
@@ -194,7 +228,6 @@ const Pricing = () => {
                 </div>
             </div>
 
-            {/* Hero Section */}
             <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -208,7 +241,6 @@ const Pricing = () => {
                 </p>
             </motion.div>
 
-            {/* Success/Error Messages */}
             <AnimatePresence>
                 {success && (
                     <motion.div
@@ -237,7 +269,78 @@ const Pricing = () => {
                 )}
             </AnimatePresence>
 
-            {/* Pricing Cards Grid */}
+            <AnimatePresence>
+                {showDevModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                        onClick={() => setShowDevModal(false)}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="bg-zinc-900 border border-white/10 rounded-2xl p-8 w-full max-w-md"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="text-center">
+                                
+                                <div className="inline-flex p-4 rounded-full bg-yellow-500/10 mb-6">
+                                    <AlertCircle className="w-8 h-8 text-yellow-400" />
+                                </div>
+
+                                <h2 className="text-2xl font-bold text-white mb-4">
+                                    Payment Service Under Development
+                                </h2>
+                                
+                                <p className="text-gray-400 mb-6">
+                                    We're currently working on our payment system. In the meantime, you can upgrade to the Pro plan by contacting us directly.
+                                </p>
+
+                                <div className="bg-white/5 rounded-lg p-4 mb-6 border border-white/10">
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <Mail className="w-5 h-5 text-white" />
+                                        <span className="text-white font-medium">Email Us</span>
+                                    </div>
+                                    <p className="text-gray-400 text-sm mb-2">
+                                        Send us an email at:
+                                    </p>
+                                    <a 
+                                        href="mailto:prathmeshshinde021@gmail.com" 
+                                        className="text-white hover:text-gray-300 transition-colors font-medium text-lg"
+                                    >
+                                        prathmeshshinde021@gmail.com
+                                    </a>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <button
+                                        onClick={handleProEmailRequest}
+                                        className="w-full py-3 bg-white text-black rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
+                                    >
+                                        <Mail className="w-4 h-4" />
+                                        <span>Send Upgrade Request Email</span>
+                                    </button>
+
+                                    <button
+                                        onClick={() => setShowDevModal(false)}
+                                        className="w-full py-3 border border-white/20 text-white rounded-lg font-medium hover:bg-white/5 transition-colors"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+
+                                <p className="text-xs text-gray-500 mt-4">
+                                    Our team will contact you within 24 hours to complete the upgrade process.
+                                </p>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <div className='max-w-7xl mx-auto px-6 pb-20'>
                 <div className='grid md:grid-cols-3 gap-8 items-stretch'>
                     {plans.map((plan, i) => {
@@ -257,7 +360,7 @@ const Pricing = () => {
                                     }
                                 `}
                             >
-                                {/* Popular Badge */}
+                                
                                 {plan.popular && (
                                     <div className='absolute -top-3 left-1/2 transform -translate-x-1/2'>
                                         <span className='px-3 py-1 bg-white text-black text-xs rounded-full font-medium'>
@@ -267,12 +370,11 @@ const Pricing = () => {
                                 )}
 
                                 <div className='p-6'>
-                                    {/* Icon */}
+                                    
                                     <div className={`inline-flex p-3 rounded-xl bg-linear-to-r from-white/10 to-white/5 mb-4`}>
                                         <Icon className='w-6 h-6 text-white' />
                                     </div>
 
-                                    {/* Plan Name */}
                                     <h3 className='text-xl font-bold text-white mb-2'>
                                         {plan.name}
                                     </h3>
@@ -280,7 +382,6 @@ const Pricing = () => {
                                         {plan.description}
                                     </p>
 
-                                    {/* Price */}
                                     <div className='mb-6 pb-6 border-b border-white/10'>
                                         <div className='flex items-baseline gap-1'>
                                             <span className='text-4xl font-bold text-white'>{plan.price}</span>
@@ -293,7 +394,6 @@ const Pricing = () => {
                                         </p>
                                     </div>
 
-                                    {/* Features List */}
                                     <ul className='space-y-3 mb-8'>
                                         {plan.features.map((feature, idx) => (
                                             <li key={idx} className='flex items-start gap-2'>
@@ -303,7 +403,6 @@ const Pricing = () => {
                                         ))}
                                     </ul>
 
-                                    {/* CTA Button */}
                                     <button
                                         onClick={() => handlePayment(plan)}
                                         disabled={loadingPlan === plan.key}
@@ -328,7 +427,6 @@ const Pricing = () => {
                                         )}
                                     </button>
 
-                                    {/* Additional Info for Pro Plan */}
                                     {plan.key === "pro" && (
                                         <p className='text-xs text-gray-500 text-center mt-3'>
                                             One-time payment. No recurring charges.
@@ -341,7 +439,6 @@ const Pricing = () => {
                 </div>
             </div>
 
-            {/* FAQ Section */}
             <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -373,7 +470,6 @@ const Pricing = () => {
                 </div>
             </motion.div>
 
-            {/* Custom Plan Section */}
             <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
